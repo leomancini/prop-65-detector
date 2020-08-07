@@ -1,0 +1,24 @@
+{
+    "name": "Prop 65 Detector",
+    "version": "0.1",
+    "description": "",
+    "manifest_version": 2,
+    "background": {
+      "scripts": ["background.js"],
+      "persistent": false
+    },
+    "browser_action": {
+        "default_icon": {
+            "16": "icons/no-match.png"
+        },
+        "default_title": "Prop 65 Detector",
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "run_at": "document_idle",
+        "js": ["inject.js"]
+      }
+    ]
+  }
