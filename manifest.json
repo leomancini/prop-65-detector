@@ -11,8 +11,7 @@
         "default_icon": {
             "16": "icons/no-match.png"
         },
-        "default_title": "Prop 65 Detector",
-        "default_popup": "popup.html"
+        "default_title": "Prop 65 Detector"
     },
     "content_scripts": [
       {

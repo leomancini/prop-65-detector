@@ -1,6 +1,6 @@
 chrome.runtime.onMessage.addListener(function(request, sender) {
     chrome.browserAction.setIcon({
-        path: 'icons/match.png',
+        path: `icons/${request.match ? 'match' : 'no-match' }.png`,
         tabId: sender.tab.id
     });
 });
