@@ -36,40 +36,38 @@ function getMatchPosition(node) {
 }
 
 function highlightMatches() {
-    if (window.Prop65.matchesFound) {
-        if (!window.Prop65.matchesHighlighted) {
-            window.Prop65.matchesHighlighted = true;
-
-            findAndReplaceDOMText(document.body, {
-                preset: 'prose',
-                find: new RegExp(window.Prop65.searchTerms.join("|")),
-                wrap: 'span',
-                wrapClass: 'Prop65WarningHighlight'
-            });
-        }
-
-        window.Prop65.matchPositions = [];
+    if (!window.Prop65.matchesHighlighted) {
+        window.Prop65.matchesHighlighted = true;
 
         findAndReplaceDOMText(document.body, {
             preset: 'prose',
             find: new RegExp(window.Prop65.searchTerms.join("|")),
-            replace: function(match, text) {
-                window.Prop65.matchPositions.push(getMatchPosition(match.node.parentNode));
-
-                return text;
-            }
+            wrap: 'span',
+            wrapClass: 'Prop65WarningHighlight'
         });
+    }
 
-        if (window.Prop65.matchPositions) {
-            if (window.Prop65.matchPositions[window.Prop65.matchIndex]) {
-                window.scrollTo(0, window.Prop65.matchPositions[window.Prop65.matchIndex]);
-            }
+    window.Prop65.matchPositions = [];
 
-            if (window.Prop65.matchIndex < (window.Prop65.matchPositions.length - 1)) {
-                window.Prop65.matchIndex++;
-            } else {
-                window.Prop65.matchIndex = 0;
-            }
+    findAndReplaceDOMText(document.body, {
+        preset: 'prose',
+        find: new RegExp(window.Prop65.searchTerms.join("|")),
+        replace: function(match, text) {
+            window.Prop65.matchPositions.push(getMatchPosition(match.node.parentNode));
+
+            return text;
+        }
+    });
+
+    if (window.Prop65.matchPositions) {
+        if (window.Prop65.matchPositions[window.Prop65.matchIndex]) {
+            window.scrollTo(0, window.Prop65.matchPositions[window.Prop65.matchIndex]);
+        }
+
+        if (window.Prop65.matchIndex < (window.Prop65.matchPositions.length - 1)) {
+            window.Prop65.matchIndex++;
+        } else {
+            window.Prop65.matchIndex = 0;
         }
     }
 }
@@ -98,6 +96,8 @@ if (typeof documentChangeObserver !== 'undefined') {
 
 chrome.runtime.onMessage.addListener(function(action) {
     if (action.clicked) {
-        highlightMatches();
+        if (window.Prop65.matchesFound) {
+            highlightMatches();
+        }
     }
 });
