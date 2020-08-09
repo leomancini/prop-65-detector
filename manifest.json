@@ -1,15 +1,21 @@
 {
     "name": "Prop 65 Detector",
-    "version": "0.1",
-    "description": "",
+    "version": "1.0",
+    "description": "Checks webpages for California Proposition 65 warnings",
     "manifest_version": 2,
     "background": {
       "scripts": ["background.js"],
       "persistent": false
     },
+    "icons": {
+      "16": "icons/package/16.png",
+      "32": "icons/package/32.png",
+      "48": "icons/package/48.png",
+      "128": "icons/package/128.png"
+    },
     "browser_action": {
         "default_icon": {
-            "16": "icons/loading.png"
+            "16": "icons/browser-action/light/loading.png"
         },
         "default_title": "Prop 65 Detector"
     },

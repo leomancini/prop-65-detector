@@ -23,7 +23,7 @@ function updateBrowserActionIcon() {
     window.Prop65.matchesFound = matchesFound;
 
     try {
-        chrome.runtime.sendMessage({ matchesFound });
+        chrome.runtime.sendMessage({ matchesFound, color: window.matchMedia('(prefers-color-scheme: dark)').matches });
     } catch(error) {
         console.log(error);
     }
