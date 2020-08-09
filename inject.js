@@ -29,10 +29,10 @@ function updateBrowserActionIcon() {
     }
 }
 
-function getMatchPosition(node) {
+function getMatchPosition(matchWrapper) {
     const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
     
-    return node.getBoundingClientRect().top + scrollPosition;
+    return matchWrapper.getBoundingClientRect().top + scrollPosition;
 }
 
 function highlightMatches() {
