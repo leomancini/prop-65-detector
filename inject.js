@@ -11,6 +11,18 @@ window.Prop65 = {
     ]
 }
 
+const appearanceMode = window.matchMedia('(prefers-color-scheme: dark)');
+appearanceMode.addListener(updateLoadingIconToMatchAppearanceMode);
+updateLoadingIconToMatchAppearanceMode();
+
+function updateLoadingIconToMatchAppearanceMode() {
+    try {
+        chrome.runtime.sendMessage({ loading: true, color: window.matchMedia('(prefers-color-scheme: dark)').matches });
+    } catch(error) {
+        console.log(error);
+    }
+}
+
 function checkPageForMatches() {
     const   documentContent = document.body.innerHTML,
             matchesFound = new RegExp(window.Prop65.searchTerms.join("|")).test(documentContent);
@@ -23,7 +35,7 @@ function updateBrowserActionIcon() {
     window.Prop65.matchesFound = matchesFound;
 
     try {
-        chrome.runtime.sendMessage({ matchesFound, color: window.matchMedia('(prefers-color-scheme: dark)').matches });
+        chrome.runtime.sendMessage({ loading: false, matchesFound, color: window.matchMedia('(prefers-color-scheme: dark)').matches });
     } catch(error) {
         console.log(error);
     }

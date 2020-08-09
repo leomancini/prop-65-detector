@@ -1,8 +1,14 @@
 chrome.runtime.onMessage.addListener(function(request, sender) {
-    chrome.browserAction.setIcon({
-        path: `icons/browser-action/${request.color ? 'dark' : 'light'}/${request.matchesFound ? 'match' : 'no-match'}.png`,
-        tabId: sender.tab.id
-    });
+    if (request.loading) {
+        chrome.browserAction.setIcon({
+            path: `icons/browser-action/${window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'}/loading.png`,
+        });
+    } else {
+        chrome.browserAction.setIcon({
+            path: `icons/browser-action/${request.color ? 'dark' : 'light'}/${request.matchesFound ? 'match' : 'no-match'}.png`,
+            tabId: sender.tab.id
+        });
+    }
 });
 
 chrome.browserAction.onClicked.addListener(function (tab) {
