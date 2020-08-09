@@ -13,26 +13,26 @@ window.Prop65 = {
 
 function checkPageForMatches() {
     const   documentContent = document.body.innerHTML,
-            matchesFound = new RegExp(window.Prop65.searchTerms.join('|')).test(documentContent);
+            matchesFound = new RegExp(window.Prop65.searchTerms.join("|")).test(documentContent);
 
     return matchesFound;
 }
 
 function updateBrowserActionIcon() {
-    const matchesFound = checkPageForMatches();
-    window.Prop65.matchesFound = matchesFound;
+    const match = checkPageForMatches();
+    window.Prop65.matchesFound = match;
 
     try {
-        chrome.runtime.sendMessage({ matchesFound });
+        chrome.runtime.sendMessage({ match });
     } catch(error) {
         console.log(error);
     }
 }
 
-function getMatchPosition(matchWrapper) {
+function getMatchPosition(node) {
     const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
     
-    return matchWrapper.getBoundingClientRect().top + scrollPosition;
+    return node.getBoundingClientRect().top + scrollPosition;
 }
 
 function highlightMatches() {
@@ -42,7 +42,7 @@ function highlightMatches() {
 
             findAndReplaceDOMText(document.body, {
                 preset: 'prose',
-                find: new RegExp(window.Prop65.searchTerms.join('|')),
+                find: new RegExp(window.Prop65.searchTerms.join("|")),
                 wrap: 'span',
                 wrapClass: 'Prop65WarningHighlight'
             });
@@ -52,7 +52,7 @@ function highlightMatches() {
 
         findAndReplaceDOMText(document.body, {
             preset: 'prose',
-            find: new RegExp(window.Prop65.searchTerms.join('|')),
+            find: new RegExp(window.Prop65.searchTerms.join("|")),
             replace: function(match, text) {
                 window.Prop65.matchPositions.push(getMatchPosition(match.node.parentNode));
 
