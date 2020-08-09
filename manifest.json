@@ -9,7 +9,7 @@
     },
     "browser_action": {
         "default_icon": {
-            "16": "icons/no-match.png"
+            "16": "icons/loading.png"
         },
         "default_title": "Prop 65 Detector"
     },

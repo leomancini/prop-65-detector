@@ -1,70 +1,86 @@
-window.prop65Match = false;
-prop65WarningHighlighted = false;
-
-const searchTerms = [
-    `Proposition 65`,
-    `Prop 65`,
-    `P65Warnings`,
-    `WARNING: Consuming this product can expose you to chemicals`
-];
-
-function checkPageForProp65() {
-    const documentContent = document.body.innerHTML;
-
-    const match = new RegExp(searchTerms.join("|")).test(documentContent);
-
-    return match;
+window.Prop65 = {
+    matchesFound: false,
+    matchesHighlighted: false,
+    matchPositions: [],
+    matchIndex: 0,
+    searchTerms: [
+        `Proposition 65`,
+        `Prop 65`,
+        `P65Warnings`,
+        `WARNING: Consuming this product can expose you to chemicals`
+    ]
 }
 
-function updateIcon() {
-    const match = checkPageForProp65();
-    window.prop65Match = match;
+function checkPageForMatches() {
+    const   documentContent = document.body.innerHTML,
+            matchesFound = new RegExp(window.Prop65.searchTerms.join('|')).test(documentContent);
+
+    return matchesFound;
+}
+
+function updateBrowserActionIcon() {
+    const matchesFound = checkPageForMatches();
+    window.Prop65.matchesFound = matchesFound;
 
     try {
-        chrome.runtime.sendMessage({ match });
+        chrome.runtime.sendMessage({ matchesFound });
     } catch(error) {
         console.log(error);
     }
 }
 
-function getNodePosition(node) {
+function getMatchPosition(node) {
     const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
     
     return node.getBoundingClientRect().top + scrollPosition;
 }
 
-function highlightProp65Warning() {
-    if (window.prop65Match) {
-        if (!prop65WarningHighlighted) {
-            prop65WarningHighlighted = true;
+function highlightMatches() {
+    if (window.Prop65.matchesFound) {
+        if (!window.Prop65.matchesHighlighted) {
+            window.Prop65.matchesHighlighted = true;
 
             findAndReplaceDOMText(document.body, {
                 preset: 'prose',
-                find: new RegExp(searchTerms.join("|")),
+                find: new RegExp(window.Prop65.searchTerms.join('|')),
                 wrap: 'span',
-                wrapClass: 'prop65WarningHighlight'
+                wrapClass: 'Prop65WarningHighlight'
             });
         }
 
+        window.Prop65.matchPositions = [];
+
         findAndReplaceDOMText(document.body, {
             preset: 'prose',
-            find: new RegExp(searchTerms.join("|")),
+            find: new RegExp(window.Prop65.searchTerms.join('|')),
             replace: function(match, text) {
-                window.scrollTo(0, getNodePosition(match.node.parentNode));
+                window.Prop65.matchPositions.push(getMatchPosition(match.node.parentNode));
 
                 return text;
             }
         });
+
+        if (window.Prop65.matchPositions) {
+            if (window.Prop65.matchPositions[window.Prop65.matchIndex]) {
+                window.scrollTo(0, window.Prop65.matchPositions[window.Prop65.matchIndex]);
+            }
+
+            if (window.Prop65.matchIndex < (window.Prop65.matchPositions.length - 1)) {
+                window.Prop65.matchIndex++;
+            } else {
+                window.Prop65.matchIndex = 0;
+            }
+        }
     }
 }
 
 if (document.readyState === 'interactive' || document.readyState === 'complete') {
-    updateIcon();
+    updateBrowserActionIcon();
 
     MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
     
     const documentChangeObserver = new MutationObserver(function() {
-        updateIcon();
+        updateBrowserActionIcon();
     });
     
     documentChangeObserver.observe(document, {
@@ -82,6 +98,6 @@ if (typeof documentChangeObserver !== 'undefined') {
 
 chrome.runtime.onMessage.addListener(function(action) {
     if (action.clicked) {
-        highlightProp65Warning();
+        highlightMatches();
     }
 });
