@@ -19,11 +19,11 @@ function checkPageForMatches() {
 }
 
 function updateBrowserActionIcon() {
-    const match = checkPageForMatches();
-    window.Prop65.matchesFound = match;
+    const matchesFound = checkPageForMatches();
+    window.Prop65.matchesFound = matchesFound;
 
     try {
-        chrome.runtime.sendMessage({ match });
+        chrome.runtime.sendMessage({ matchesFound });
     } catch(error) {
         console.log(error);
     }
