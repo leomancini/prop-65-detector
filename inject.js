@@ -7,7 +7,9 @@ window.Prop65 = {
         `Proposition 65`,
         `Prop 65`,
         `P65Warnings`,
-        `WARNING: Consuming this product can expose you to chemicals`
+        `WARNING: Consuming this product can expose you to chemicals`,
+        `www.P65warnings.ca.gov`,
+        `WARNING: Cancer and Reproductive Harm`
     ]
 }
 
